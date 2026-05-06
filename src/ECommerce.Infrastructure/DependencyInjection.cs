@@ -14,7 +14,7 @@ public static class DependencyInjection
     {
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
 
-        var connectionString = configuration.GetConnectionString("DefaultConnection")!;
+        var connectionString = configuration.GetConnectionString("Production")!;
         var usePostgres = Environment.GetEnvironmentVariable("USE_POSTGRES") == "true"
                        || connectionString.StartsWith("Host=")
                        || connectionString.StartsWith("postgres");
