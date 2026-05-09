@@ -65,8 +65,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization();
 
+// Read allowed origins from appsettings.json or the ALLOWED_ORIGINS env var
+// On MonsterASP set env var: ALLOWED_ORIGINS=https://your-app.netlify.app,http://localhost:5173
+var envOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS");
+var allowedOrigins = envOrigins?.Split(",", StringSplitOptions.RemoveEmptyEntries)
+    ?? builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+    ?? new[] { "http://localhost:5173", "http://localhost:5174" };
+
 builder.Services.AddCors(o => o.AddPolicy("Front", p =>
-    p.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174")
+    p.WithOrigins(allowedOrigins)
         .AllowAnyHeader()
         .AllowAnyMethod()));
 
